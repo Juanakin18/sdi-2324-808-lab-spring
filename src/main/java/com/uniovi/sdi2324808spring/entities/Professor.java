@@ -1,6 +1,14 @@
 package com.uniovi.sdi2324808spring.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.Objects;
+
+@Entity
 public class Professor {
+    @Id
+    @GeneratedValue
     private Long id;
 
     private String DNI;
@@ -14,6 +22,10 @@ public class Professor {
         this.name = name;
         this.surname = surname;
         this.category = category;
+    }
+
+    public Professor() {
+
     }
 
     public void setId(Long id) {
@@ -65,5 +77,18 @@ public class Professor {
                 ", apellidos='" + surname + '\'' +
                 ", categoria='" + category + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Professor professor = (Professor) o;
+        return Objects.equals(id, professor.id) && Objects.equals(DNI, professor.DNI) && Objects.equals(name, professor.name) && Objects.equals(surname, professor.surname) && Objects.equals(category, professor.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, DNI, name, surname, category);
     }
 }

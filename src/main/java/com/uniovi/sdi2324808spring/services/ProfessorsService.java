@@ -1,6 +1,10 @@
 package com.uniovi.sdi2324808spring.services;
 
+import com.uniovi.sdi2324808spring.entities.Mark;
 import com.uniovi.sdi2324808spring.entities.Professor;
+import com.uniovi.sdi2324808spring.repositories.MarksRepository;
+import com.uniovi.sdi2324808spring.repositories.ProfessorsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -10,40 +14,26 @@ import java.util.List;
 @Service
 public class ProfessorsService {
 
-    private List<Professor> professorList = new ArrayList<>();
+    @Autowired
+    private  ProfessorsRepository professorsRepository;
 
-    @PostConstruct
-    public void init(){
-        professorList.add(new Professor(0L, "12356", "Profesor1", "Ramirez", "Profesor Titular"));
-        professorList.add(new Professor(1L, "123561", "Profesor2", "Fernandez", "Profesor Ayudante"));
-    }
+
+
     public List<Professor> getProfessorList(){
-        return  professorList;
+        List<Professor> professors = new ArrayList<Professor>();
+        professorsRepository.findAll().forEach(professors::add);
+        return professors;
     }
 
     public void addProfessor(Professor professor){
-        professor.setId((long) professorList.size());
-        professorList.add(professor);
+       professorsRepository.save(professor);
     }
     public void deleteProfessor(Long id){
-        professorList.remove(findProfessor(id));
+        professorsRepository.deleteById(id);
     }
     public Professor findProfessor(Long id){
-        for (Professor p:
-             professorList) {
-            if(p.getId().equals(id)){
-                return p;
-            }
-        }
-        return null;
+        return professorsRepository.findById(id).get();
     }
 
-    public void setProfessor(Long id, Professor professor) {
-        professor.setId(id);
-        for (int i = 0; i < getProfessorList().size(); i++) {
-            if(professorList.get(i).getId().equals(id))
-                professorList.set(i, professor);
-        }
 
-    }
 }
