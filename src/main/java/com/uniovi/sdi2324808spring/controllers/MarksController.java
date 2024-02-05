@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class MarksController {
 
-    @Autowired
-    private MarksService marksService;
+    private final MarksService marksService;
+
+    public MarksController(MarksService marksService) {
+        this.marksService = marksService;
+    }
+
     @RequestMapping("/mark/list")
     public String getList (Model model) {
         model.addAttribute("markList", marksService.getMarks());
