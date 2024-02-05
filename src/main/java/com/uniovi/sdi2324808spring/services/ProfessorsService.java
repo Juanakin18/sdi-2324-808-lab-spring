@@ -14,14 +14,15 @@ public class ProfessorsService {
 
     @PostConstruct
     public void init(){
-        professorList.add(new Professor(1L, "12356", "Profesor1", "Ramirez", "Profesor Titular"));
-        professorList.add(new Professor(2L, "123561", "Profesor2", "Fernandez", "Profesor Ayudante"));
+        professorList.add(new Professor(0L, "12356", "Profesor1", "Ramirez", "Profesor Titular"));
+        professorList.add(new Professor(1L, "123561", "Profesor2", "Fernandez", "Profesor Ayudante"));
     }
     public List<Professor> getProfessorList(){
         return  professorList;
     }
 
     public void addProfessor(Professor professor){
+        professor.setId((long) professorList.size());
         professorList.add(professor);
     }
     public void deleteProfessor(Long id){
