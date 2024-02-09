@@ -3,6 +3,7 @@ package com.uniovi.sdi2324808spring.entities;
 import javax.persistence.*;
 import java.util.Set; //Colección que no admite duplicados
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue
@@ -11,6 +12,10 @@ public class User {
     private String dni;
     private String name;
     private String lastName;
+
+    private String password;
+    @Transient //propiedad que no se almacena en la tabla.
+    private String passwordConfirm;
     private String role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Mark> marks;
@@ -19,6 +24,18 @@ public class User {
         this.dni = dni;
         this.name = name;
         this.lastName = lastName;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
     public User() { }
     public long getId() { return id; }
