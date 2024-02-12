@@ -39,4 +39,12 @@ public class UsersService {
         usersRepository.deleteById(id);
     }
 
+    public void editUser(Long id, User user) {
+        User lastUser = usersRepository.findById(id).get();
+        lastUser.setDni(user.getDni());
+        lastUser.setName(user.getName());
+        lastUser.setLastName(user.getLastName());
+        usersRepository.save(lastUser);
+
+    }
     }
