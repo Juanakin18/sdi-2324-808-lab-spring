@@ -19,6 +19,7 @@ public class ProfessorsService {
 
 
 
+
     public List<Professor> getProfessorList(){
         List<Professor> professors = new ArrayList<Professor>();
         professorsRepository.findAll().forEach(professors::add);
@@ -36,4 +37,12 @@ public class ProfessorsService {
     }
 
 
+    public Professor findProfessorByDNI(String dni) {
+        for (Professor p: getProfessorList()
+             ) {
+            if(p.getDNI().equals(dni))
+                return p;
+        }
+        return null;
+    }
 }

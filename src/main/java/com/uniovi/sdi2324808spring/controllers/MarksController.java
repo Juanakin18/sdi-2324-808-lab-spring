@@ -4,9 +4,11 @@ package com.uniovi.sdi2324808spring.controllers;
 import com.uniovi.sdi2324808spring.entities.Mark;
 import com.uniovi.sdi2324808spring.services.MarksService;
 import com.uniovi.sdi2324808spring.services.UsersService;
+import com.uniovi.sdi2324808spring.validators.AddMarkValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -14,9 +16,11 @@ public class MarksController {
 
     private final MarksService marksService;
     private final UsersService usersService;
-    public MarksController(MarksService marksService, UsersService usersService) {
+    private AddMarkValidator validator;
+    public MarksController(MarksService marksService, UsersService usersService, AddMarkValidator validator) {
         this.marksService = marksService;
         this.usersService = usersService;
+        this.validator = validator;
     }
 
     @RequestMapping("/mark/list")
@@ -25,7 +29,13 @@ public class MarksController {
         return "mark/list";
 }
     @RequestMapping(value = "/mark/add", method = RequestMethod.POST)
-    public String setMark(@ModelAttribute Mark mark) {
+    public String setMark(Model model, @ModelAttribute Mark mark, BindingResult result) {
+        validator.validate(mark,result);
+        if(result.hasErrors()){
+            model.addAttribute("mark", mark);
+            model.addAttribute("usersList", usersService.getUsers());
+            return "mark/add";
+        }
         marksService.addMark(mark);
         return "redirect:/mark/list";
     }
@@ -50,6 +60,7 @@ public class MarksController {
 
     @RequestMapping(value="/mark/add")
     public String getMark(Model model){
+        model.addAttribute("mark", new  Mark());
         model.addAttribute("usersList", usersService.getUsers());
         return "mark/add";
     }
@@ -62,6 +73,8 @@ public class MarksController {
 
     @RequestMapping(value = "/mark/edit/{id}", method = RequestMethod.POST)
     public String setEdit(@ModelAttribute Mark mark, @PathVariable Long id) {
+
+
         Mark originalMark = marksService.getMark(id);
 // modificar solo score y description
         originalMark.setScore(mark.getScore());
