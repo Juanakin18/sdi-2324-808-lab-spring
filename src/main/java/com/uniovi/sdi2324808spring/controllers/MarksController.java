@@ -34,8 +34,15 @@ public class MarksController {
 
 
     @RequestMapping("/mark/list")
-    public String getList(Model model) {
-        model.addAttribute("marksList", marksService.getMarks());
+    public String getList(Model model, Principal principal, @RequestParam(value="", required = false )String searchText) {
+        String dni = principal.getName();
+        User user= usersService.getUserByDni((dni));
+        if(searchText !=null && !searchText.isEmpty()){
+            model.addAttribute("marksList", marksService.searchMarksByDescriptionAndNameForUser(searchText,user));
+        }else{
+            model.addAttribute("marksList", marksService.getMarksForUser(user));
+        }
+
         return "mark/list";
     }
     @RequestMapping(value = "/mark/add", method = RequestMethod.POST)
