@@ -2,6 +2,7 @@ package com.uniovi.sdi2324808spring.controllers;
 
 import com.uniovi.sdi2324808spring.entities.Mark;
 import com.uniovi.sdi2324808spring.entities.User;
+import com.uniovi.sdi2324808spring.services.RolesService;
 import com.uniovi.sdi2324808spring.services.SecurityService;
 import com.uniovi.sdi2324808spring.services.UsersService;
 import com.uniovi.sdi2324808spring.validators.SignUpFormValidator;
@@ -21,12 +22,15 @@ public class UsersController {
     private final UsersService usersService;
     private final SecurityService securityService;
     private final SignUpFormValidator signUpFormValidator;
-    public UsersController(UsersService usersService, SecurityService securityService, SignUpFormValidator
-            signUpFormValidator) {
+    private final RolesService rolesService;
+
+    public UsersController(UsersService usersService, SecurityService securityService, SignUpFormValidator signUpFormValidator, RolesService rolesService) {
         this.usersService = usersService;
         this.securityService = securityService;
         this.signUpFormValidator = signUpFormValidator;
+        this.rolesService = rolesService;
     }
+
     @RequestMapping("/user/list")
     public String getListado(Model model) {
         model.addAttribute("usersList", usersService.getUsers());
@@ -34,7 +38,7 @@ public class UsersController {
     }
     @RequestMapping(value = "/user/add")
     public String getUser(Model model) {
-        model.addAttribute("usersList", usersService.getUsers());
+        model.addAttribute("rolesList", rolesService.getRoles());
         return "user/add";
     }
     @RequestMapping(value = "/user/add", method = RequestMethod.POST)
@@ -76,7 +80,7 @@ public class UsersController {
         if(result.hasErrors()){
             return "signup";
         }
-
+        user.setRole(rolesService.getRoles()[0]);
         usersService.addUser(user);
         securityService.autoLogin(user.getDni(), user.getPasswordConfirm());
         return "redirect:home";

@@ -17,6 +17,15 @@ public class User {
     @Transient //propiedad que no se almacena en la tabla.
     private String passwordConfirm;
     private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Mark> marks;
     public User(String dni, String name, String lastName) {
