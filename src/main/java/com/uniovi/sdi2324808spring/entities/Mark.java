@@ -1,6 +1,7 @@
 package com.uniovi.sdi2324808spring.entities;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Mark {
@@ -63,5 +64,12 @@ public class Mark {
         this.id = id;
         this.description = description;
         this.score = score;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mark mark = (Mark) o;
+        return Objects.equals(id, mark.id);
     }
 }

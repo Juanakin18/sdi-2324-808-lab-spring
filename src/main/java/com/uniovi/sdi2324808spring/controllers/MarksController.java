@@ -11,23 +11,35 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.HashSet;
+import java.util.Set;
+
 @Controller
 public class MarksController {
 
     private final MarksService marksService;
     private final UsersService usersService;
     private AddMarkValidator validator;
-    public MarksController(MarksService marksService, UsersService usersService, AddMarkValidator validator) {
+    private final HttpSession httpSession;
+    public MarksController(MarksService marksService, UsersService usersService, AddMarkValidator
+            markAddValidator, HttpSession httpSession) {
         this.marksService = marksService;
         this.usersService = usersService;
-        this.validator = validator;
+        this.validator = markAddValidator;
+        this.httpSession = httpSession;
     }
 
+
     @RequestMapping("/mark/list")
-    public String getList (Model model) {
-        model.addAttribute("markList", marksService.getMarks());
+    public String getList(Model model) {
+        Set<Mark> consultedList = (Set<Mark>) (httpSession.getAttribute("consultedList") != null ?
+                httpSession.getAttribute("consultedList") : new HashSet<>());
+        model.addAttribute("consultedList", consultedList);
+        model.addAttribute("marksList", marksService.getMarks());
+        updateList(model);
         return "mark/list";
-}
+    }
     @RequestMapping(value = "/mark/add", method = RequestMethod.POST)
     public String setMark(Model model, @ModelAttribute Mark mark, BindingResult result) {
         validator.validate(mark,result);
