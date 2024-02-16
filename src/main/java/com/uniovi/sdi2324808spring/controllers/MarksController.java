@@ -2,6 +2,7 @@ package com.uniovi.sdi2324808spring.controllers;
 
 
 import com.uniovi.sdi2324808spring.entities.Mark;
+import com.uniovi.sdi2324808spring.entities.User;
 import com.uniovi.sdi2324808spring.services.MarksService;
 import com.uniovi.sdi2324808spring.services.UsersService;
 import com.uniovi.sdi2324808spring.validators.AddMarkValidator;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +36,6 @@ public class MarksController {
     @RequestMapping("/mark/list")
     public String getList(Model model) {
         model.addAttribute("marksList", marksService.getMarks());
-        updateList(model);
         return "mark/list";
     }
     @RequestMapping(value = "/mark/add", method = RequestMethod.POST)
@@ -92,9 +93,11 @@ public class MarksController {
         return "redirect:/mark/details/" + id;
     }
     @RequestMapping("/mark/list/update")
-    public String updateList(Model model){
-        model.addAttribute("markList", marksService.getMarks() );
-        return "mark/list :: marksTable";
+    public String updateList(Model model, Principal principal) {
+        String dni = principal.getName(); // DNI es el name de la autenticación
+        User user = usersService.getUserByDni(dni);
+        model.addAttribute("marksList", marksService.getMarksForUser(user));
+        return "mark/list :: marksTables";
     }
     @RequestMapping(value = "/mark/{id}/resend", method = RequestMethod.GET)
     public String setResendTrue(@PathVariable Long id) {
@@ -105,6 +108,13 @@ public class MarksController {
     public String setResendFalse(@PathVariable Long id) {
         marksService.setMarkResend(false, id);
         return "redirect:/mark/list";
+    }
+    @RequestMapping("/mark/list")
+    public String getList(Model model, Principal principal){
+        String dni = principal.getName(); // DNI es el name de la autenticación
+        User user = usersService.getUserByDni(dni);
+        model.addAttribute("marksList", marksService.getMarksForUser(user) );
+        return "mark/list";
     }
 
 
