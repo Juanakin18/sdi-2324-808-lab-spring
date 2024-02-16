@@ -7,12 +7,14 @@ import com.uniovi.sdi2324808spring.services.MarksService;
 import com.uniovi.sdi2324808spring.services.UsersService;
 import com.uniovi.sdi2324808spring.validators.AddMarkValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.awt.print.Pageable;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,15 +36,18 @@ public class MarksController {
 
 
     @RequestMapping("/mark/list")
-    public String getList(Model model, Principal principal, @RequestParam(value="", required = false )String searchText) {
+    public String getList(Model model, Pageable pageable, Principal principal, @RequestParam(value="", required = false )String searchText) {
         String dni = principal.getName();
         User user= usersService.getUserByDni((dni));
+        Page<Mark> marks;
         if(searchText !=null && !searchText.isEmpty()){
-            model.addAttribute("marksList", marksService.searchMarksByDescriptionAndNameForUser(searchText,user));
+            marks = marksService.searchMarksByDescriptionAndNameForUser(pageable, searchText, user);
         }else{
-            model.addAttribute("marksList", marksService.getMarksForUser(user));
+            marks = marksService.getMarksForUser(pageable,user);
         }
 
+        model.addAttribute("markList", marks.getContent());
+        model.addAttribute("page", marks);
         return "mark/list";
     }
     @RequestMapping(value = "/mark/add", method = RequestMethod.POST)
@@ -100,10 +105,11 @@ public class MarksController {
         return "redirect:/mark/details/" + id;
     }
     @RequestMapping("/mark/list/update")
-    public String updateList(Model model, Principal principal) {
+    public String updateList(Model model, Pageable pageable, Principal principal) {
         String dni = principal.getName(); // DNI es el name de la autenticación
         User user = usersService.getUserByDni(dni);
-        model.addAttribute("marksList", marksService.getMarksForUser(user));
+        Page<Mark> marks = marksService.getMarksForUser(pageable,user);
+        model.addAttribute("marksList",marks);
         return "mark/list :: marksTables";
     }
     @RequestMapping(value = "/mark/{id}/resend", method = RequestMethod.GET)
@@ -116,13 +122,7 @@ public class MarksController {
         marksService.setMarkResend(false, id);
         return "redirect:/mark/list";
     }
-    @RequestMapping("/mark/list")
-    public String getList(Model model, Principal principal){
-        String dni = principal.getName(); // DNI es el name de la autenticación
-        User user = usersService.getUserByDni(dni);
-        model.addAttribute("marksList", marksService.getMarksForUser(user) );
-        return "mark/list";
-    }
+
 
 
 
