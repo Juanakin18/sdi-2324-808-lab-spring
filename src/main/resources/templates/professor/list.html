@@ -1,5 +1,5 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity4">
 <head th:replace="fragments/head"></head>
 
 <!-- Barra de Navegación superior -->
@@ -29,9 +29,9 @@
                 <td th:text="${professor.name}">pepe</td>
                 <td th:text="${professor.surname}"> ramirez</td>
                 <td th:text="${professor.category}">aa</td>
-                <td><a th:href="${'/professor/details/' + professor.id}">detalles</a></td>
-                <td><a th:href="${'/professor/edit/' + professor.id}">modificar</a></td>
-                <td><a th:href="${'/professor/delete/' + professor.id}">eliminar</a></td>
+                <td><a th:href="${'/professor/details/' + professor.id}" sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">detalles</a></td>
+                <td><a th:href="${'/professor/edit/' + professor.id}" sec:authorize="hasRole('ROLE_ADMIN')">modificar</a></td>
+                <td><a th:href="${'/professor/delete/' + professor.id}" sec:authorize="hasRole('ROLE_ADMIN')">eliminar</a></td>
             </tr>
             </tbody>
         </table>
