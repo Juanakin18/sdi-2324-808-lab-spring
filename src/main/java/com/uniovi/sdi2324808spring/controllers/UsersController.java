@@ -15,10 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 public class UsersController {
@@ -38,8 +37,8 @@ public class UsersController {
     }
 
     @RequestMapping("/user/list")
-    public String getListado(Model model) {
-        model.addAttribute("usersList", usersService.getUsers());
+    public String getListado(Model model, Pageable pageable) {
+        model.addAttribute("usersList", usersService.getUsers(pageable).getContent());
         return "user/list";
     }
     @RequestMapping(value = "/user/add")
@@ -107,9 +106,32 @@ public class UsersController {
     }
 
     @RequestMapping("/user/list/update")
-    public String updateList(Model model){
-        model.addAttribute("usersList", usersService.getUsers() );
+    public String updateList(Model model, Pageable pageable){
+        model.addAttribute("usersList", usersService.getUsers(pageable) );
         return "fragments/userTable";
+    }
+    @RequestMapping("/user/list")
+    public String getList(Model model, Pageable pageable, Principal principal, @RequestParam(value="", required = false )String searchTextNombre,
+                          @RequestParam(value="", required = false )String searchTextApellido
+    ) {
+        String dni = principal.getName();
+        User user= usersService.getUserByDni((dni));
+        Page<User> users;
+        if(searchTextNombre !=null && !searchTextNombre.isEmpty()){
+            if(searchTextApellido!=null && !searchTextApellido.isEmpty()){
+                users = usersService.findUsersContainingNameAndSurname(pageable,searchTextNombre, searchTextApellido);
+            }else{
+                users = usersService.findUsersContainingName(pageable,searchTextNombre);
+            }
+        }else if (searchTextApellido!=null && !searchTextApellido.isEmpty()){
+            users = usersService.findUsersContainingSurname(pageable,searchTextApellido);
+        }else{
+            users = usersService.getUsers(pageable);
+        }
+
+        model.addAttribute("usersList", users.getContent());
+        model.addAttribute("page", users);
+        return "mark/list";
     }
 
 

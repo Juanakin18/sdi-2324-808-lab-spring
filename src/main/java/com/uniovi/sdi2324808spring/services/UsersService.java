@@ -6,6 +6,8 @@ import javax.annotation.PostConstruct;
 import com.uniovi.sdi2324808spring.entities.User;
 import com.uniovi.sdi2324808spring.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 @Service
@@ -20,9 +22,8 @@ public class UsersService {
     @PostConstruct
     public void init() {
     }
-    public List<User> getUsers() {
-        List<User> users = new ArrayList<User>();
-        usersRepository.findAll().forEach(users::add);
+    public Page<User> getUsers(Pageable pageable) {
+        Page<User> users = usersRepository.findAll(pageable);
         return users;
     }
     public User getUser(Long id) {
@@ -47,4 +48,21 @@ public class UsersService {
         usersRepository.save(lastUser);
 
     }
+
+    public Page<User> findUsersContainingNameAndSurname(Pageable pageable, String searchTextNombre, String searchTextApellido) {
+        searchTextNombre = "%"+searchTextNombre+"%";
+        searchTextApellido = "%"+searchTextApellido+"%";
+
+        return usersRepository.findUsersContainingNameAndSurname(pageable, searchTextNombre, searchTextApellido);
     }
+
+    public Page<User> findUsersContainingName(Pageable pageable, String searchTextNombre) {
+        searchTextNombre = "%"+searchTextNombre+"%";
+        return usersRepository.findUsersContainingName(pageable, searchTextNombre);
+    }
+
+    public Page<User> findUsersContainingSurname(Pageable pageable, String searchTextApellido) {
+        searchTextApellido = "%"+searchTextApellido+"%";
+        return usersRepository.findUsersContainingSurname(pageable, searchTextApellido);
+    }
+}

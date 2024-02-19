@@ -11,6 +11,15 @@
     });
 </script>
 <div class="container">
+    <form class="form-inline" action="/user/list">
+        <div class="form-group">
+            <input name="searchTextNombre" type="text" class="form-control" size="50"
+                   placeholder="Introduzca el nombre a buscar">
+            <input name="searchTextApellido" type="text" class="form-control" size="50"
+                   placeholder="Introduzca el apellido a buscar">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
     <h2>Usuarios</h2>
     <p>Los usuarios que actualmente figuran en el sistema son los
         siguientes:</p>
