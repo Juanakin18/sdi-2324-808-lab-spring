@@ -8,13 +8,13 @@ import com.uniovi.sdi2324808spring.services.UsersService;
 import com.uniovi.sdi2324808spring.validators.AddMarkValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.awt.print.Pageable;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
@@ -109,7 +109,7 @@ public class MarksController {
         String dni = principal.getName(); // DNI es el name de la autenticación
         User user = usersService.getUserByDni(dni);
         Page<Mark> marks = marksService.getMarksForUser(pageable,user);
-        model.addAttribute("marksList",marks);
+        model.addAttribute("marksList",marks.getContent());
         return "mark/list :: marksTables";
     }
     @RequestMapping(value = "/mark/{id}/resend", method = RequestMethod.GET)

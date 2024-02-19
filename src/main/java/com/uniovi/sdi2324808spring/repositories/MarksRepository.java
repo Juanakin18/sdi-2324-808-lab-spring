@@ -3,12 +3,13 @@ package com.uniovi.sdi2324808spring.repositories;
 import com.uniovi.sdi2324808spring.entities.Mark;
 import com.uniovi.sdi2324808spring.entities.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;
-import java.awt.print.Pageable;
+
 import java.util.List;
 
 public interface MarksRepository extends CrudRepository<Mark,Long> {
