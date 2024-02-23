@@ -36,11 +36,14 @@ public class UsersController {
         this.marksService = marksService;
     }
 
+    /*
     @RequestMapping("/user/list")
     public String getListado(Model model, Pageable pageable) {
         model.addAttribute("usersList", usersService.getUsers(pageable).getContent());
         return "user/list";
-    }
+    }*
+
+     */
     @RequestMapping(value = "/user/add")
     public String getUser(Model model) {
         model.addAttribute("rolesList", rolesService.getRoles());
