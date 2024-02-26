@@ -4,6 +4,7 @@ package com.uniovi.sdi2324808spring.util;
 import java.util.List;
 
 
+import com.uniovi.sdi2324808spring.pageobjects.PO_View;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -118,5 +119,10 @@ public class SeleniumUtils {
 				e.printStackTrace();
 			}
 		}
+	}
+	static  public  void goToPage(WebDriver driver, int page){
+		List<WebElement> elements = PO_View.checkElementBy(driver, "free", "//a[contains(@class, 'page-link')]");
+		//Nos vamos a la última página
+		elements.get(page-1).click();
 	}
 }

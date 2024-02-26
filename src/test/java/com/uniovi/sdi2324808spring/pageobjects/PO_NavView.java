@@ -46,4 +46,26 @@ public class PO_NavView extends PO_View {
                 getTimeout());
         Selectedlanguage.get(0).click();
     }
+    static public void doLogin(WebDriver driver, String dni, String password){
+        //Inicio doLogin(driver, dni, password)
+        //Vamos al formulario de logueo.
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        //Rellenamos el formulario
+        PO_LoginView.fillLoginForm(driver, dni, password);
+    }
+
+    static public  void doLogout(WebDriver driver){
+        String loginText = PO_HomeView.getP().getString("signup.message", PO_Properties.getSPANISH());
+        PO_PrivateView.clickOption(driver, "logout", "text", loginText);
+    }
+
+    static public void goToNavPage(WebDriver driver, String text){
+        List<WebElement> elements = PO_View.checkElementBy(driver, "free",
+                "//*[@id='myNavbar']/ul[1]/li[2]");
+        elements.get(0).click();
+        //Pinchamos en la opción de lista de notas.
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, '"+text+"')]");
+        elements.get(0).click();
+    }
+
 }
